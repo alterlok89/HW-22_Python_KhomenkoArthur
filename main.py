@@ -1,6 +1,7 @@
 import sqlite3
 
 
+# Задание не до конца, только заготовка
 class DataBase:
     def __init__(self, db_name: str='english_bot'):
         self.__db_name = f'{db_name}.sqlite'
@@ -13,7 +14,7 @@ class DataBase:
         # print(values)
         req = f'CREATE TABLE IF NOT EXISTS "{table}"('
         for i in range(len(keys)):
-            req += f'"{keys[i]}" "{values[i]}", '
+            req += f'"{keys[i]}" {values[i]}, '
         req = req[:-2] + ')'
         # print(req)
         self.__conn.cursor()
@@ -33,14 +34,17 @@ class DataBase:
                           f' ({columns}) ' \
                           f'VALUES ' \
                           f'({values});'
-        print(req)
+        # print(req)
         self.__conn.cursor()
         self.__conn.execute(req)
         self.__conn.commit()
 
     def delete_table(self, table: str,):
-        pass
-    
+        req = f'DROP TABLE IF EXISTS {table}'
+        self.__conn.cursor()
+        self.__conn.execute(req)
+        self.__conn.commit()
+
     def delete_item(self, table: str, item_text):
         pass
 
@@ -48,7 +52,7 @@ class DataBase:
         pass
 
 
-DataBase()
+# DataBase()
 db = DataBase()
 db.setup(table='Dictionary - Словарь',
                data={
@@ -98,10 +102,10 @@ db.setup(table='Users',
 
 
 # db = DataBase()
-db.add_item(table='Dictionary - Словарь',
-               data={
-                    'english word': 'dgqer',
-                    'transcription': 'awe',
-                    'translate': 'shd',
-                })
+# db.add_item(table='Dictionary - Словарь',
+#                data={
+#                     'english word': 'dgqer',
+#                     'transcription': 'awe',
+#                     'translate': 'shd',
+#                 })
 
