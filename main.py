@@ -40,7 +40,7 @@ class DataBase:
         self.__conn.commit()
 
     def delete_table(self, table: str,):
-        req = f'DROP TABLE IF EXISTS {table}'
+        req = f'DROP TABLE IF EXISTS "{table}"'
         self.__conn.cursor()
         self.__conn.execute(req)
         self.__conn.commit()
@@ -109,3 +109,4 @@ db.setup(table='Users',
 #                     'translate': 'shd',
 #                 })
 
+# db.delete_table(table='Dictionary - Словарь')
