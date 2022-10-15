@@ -47,7 +47,6 @@ class DataBase:
         select_data = select.fetchone()
         # print(select_data)
         self.__conn.commit()
-        self.__conn.close()
         if select_data is None:
             return data
 
@@ -58,7 +57,6 @@ class DataBase:
         select_data = select.fetchall()
         # print(select_data)
         self.__conn.commit()
-        self.__conn.close()
         return select_data
 
 
@@ -67,7 +65,7 @@ class DataBase:
         get = f'SELECT * FROM Users WHERE telegram_id="{telegram_id}"'
         result = curs.execute(get)
         data = result.fetchall()
-        print(data)
+        # print(data)
         return data
 
     def delete_table(self, table: str):

@@ -2,16 +2,6 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemo
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import database, random
 
-# btn1 = KeyboardButton('some text')
-# btn2 = KeyboardButton('some text2', )
-# keyboard_test = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-# keyboard_test.add(btn1, btn2)
-# keyboard_test.insert(btn1)
-# keyboard_test.add(btn1)
-# keyboard_test.row(btn1, btn2, btn1)
-# keyboard_test.row(btn1)
-# keyboard_test.add(btn1, btn1, btn2)
-
 menu = ['Начало работы', 'Аудио урок', 'Тест на знание слов', 'Тест на знание идиом', 'Перевод слова', 'Идиомы', 'Радио', 'Обновить данные профиля']
 
 keyboard_menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -27,6 +17,17 @@ def get_kbrd():
         KeyboardButton('Телефон', request_contact=True),
         KeyboardButton('Местонахождение', request_location=True))
     return menu
+
+def get_audio_kbrd():
+    menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1,)
+    menu.add(
+        KeyboardButton('Урок 1',),
+        KeyboardButton('Урок 2',),
+        KeyboardButton('Урок 3',),
+    )
+    return menu
+
+# bot.send_audio(chat_id, audio.get('url')
 
 # тест на слова
 def inline_keyboard(word_list: list, num: int,):
