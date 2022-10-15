@@ -61,6 +61,41 @@ class DataBase:
         self.__conn.close()
         return select_data
 
+    def add_user(self, data: dict):
+        get = f'INSERT INTO Users (' \
+              f'telegram_id, ' \
+              f'first_name, ' \
+              f'last_name, ' \
+              f'username, ' \
+              f'phone, ' \
+              f'email' \
+              f'location' \
+              f'is_bot' \
+              f'language_code' \
+              f') VALUES (' \
+              f'"{data["telegram_id"]}", ' \
+              f'"{data["first_name"]}", ' \
+              f'"{data["first_name"]}", ' \
+              f'"{data["username"]}", ' \
+              f'"{data.get("phone")}", ' \
+              f'"{str(data.get("email"))}", ' \
+              f'"{data.get("location")}", ' \
+              f'"{data.get("is_bot")}"' \
+              f'"{data.get("language_code")}"' \
+              f');'
+        self.__conn.cursor()
+        self.__conn.execute(get)
+        self.__conn.commit()
+        self.__conn.commit()
+
+    def get_user(self, telegram_id: int):
+        curs = self.__conn.cursor()
+        get = f'SELECT * FROM Users WHERE telegram_id="{telegram_id}"'
+        result = curs.execute(get)
+        data = result.fetchall()
+        print(data)
+        return data
+
     def delete_table(self, table: str):
         req = f'DROP TABLE IF EXISTS "{table}"'
         self.__conn.cursor()
@@ -77,6 +112,15 @@ class DataBase:
 
 DataBase()
 db = DataBase()
+
+# user = {
+#     "message_id": 91,
+#     "from": {"id": 581069221, "is_bot": "false", "first_name": "Артур", "username": "alterlok", "language_code": "ru"},
+#     "chat": {"id": 581069221, "first_name": "Артур", "username": "alterlok", "type": "private"},
+#     "date": 1665850075,
+#     "text": "1"}
+
+
 # db.setup(table='Dictionary - Словарь',
 #                data={
 #                     'word id': 'integer primary key autoincrement',
@@ -108,10 +152,17 @@ db = DataBase()
 #                 })
 # db.setup(table='Users',
 #                data={
-#                     'user id': 'integer primary key autoincrement',
-#                     'user name': 'string not null',
-#                 #    не уверен что еще сюда надо, возможно подсчет дней пользованием ботом?
+#                     'telegram_id': 'integer primary key',
+#                     'first_name': 'string',
+#                     'last_name': 'string',
+#                     'username': 'string',
+#                     'phone': 'string',
+#                     'email': 'string',
+#                     'location': 'string',
+#                     'is_bot': 'string not null',
+#                     'language_code': 'string not null',
 #                 })
+
 
 # Меню бота: Уроки / Словарь пользователя / Идиомы / Тесты / Радио
 # Меню бота: Уроки  --> подтягивает текст + аудио дорожку урока (в плане 65 уроков)
@@ -126,19 +177,16 @@ db = DataBase()
 
 # db.delete_table(table='Dictionary - Словарь')
 # перенос словаря из json в базу данных
-# def dictionary_to_database():
-#     with open('JSONdict.json', encoding="utf-8") as file:
-#         list_dictionary = json.load(file)
-#
-#     a = 0
-#     for i in list_dictionary:
-#         # time.sleep(3)
-#         db.add_item(table='Dictionary - Словарь', data=i)
-#     # были ошибки проверял, на каком шаге переноса
-#     #     print(a, ' - ', i)
-#     #     a+=1
-#     #     # if a%5000 == 0:
-#     #     #     time.sleep(2)
+def dictionary_to_database():
+    with open('JSONdict.json', encoding="utf-8") as file:
+        list_dictionary = json.load(file)
+
+    a = 0
+    for i in list_dictionary:
+        # time.sleep(3)
+        db.add_item(table='Dictionary - Словарь', data=i)
+    # были ошибки проверял, на каком шаге переноса
+    #     print(a, ' - ', i)
 
 
 # print(db.get_all_item(table='Dictionary - Словарь'))
