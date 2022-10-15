@@ -61,32 +61,6 @@ class DataBase:
         self.__conn.close()
         return select_data
 
-    def add_user(self, data: dict):
-        get = f'INSERT INTO Users (' \
-              f'telegram_id, ' \
-              f'first_name, ' \
-              f'last_name, ' \
-              f'username, ' \
-              f'phone, ' \
-              f'email' \
-              f'location' \
-              f'is_bot' \
-              f'language_code' \
-              f') VALUES (' \
-              f'"{data["telegram_id"]}", ' \
-              f'"{data["first_name"]}", ' \
-              f'"{data["first_name"]}", ' \
-              f'"{data["username"]}", ' \
-              f'"{data.get("phone")}", ' \
-              f'"{str(data.get("email"))}", ' \
-              f'"{data.get("location")}", ' \
-              f'"{data.get("is_bot")}"' \
-              f'"{data.get("language_code")}"' \
-              f');'
-        self.__conn.cursor()
-        self.__conn.execute(get)
-        self.__conn.commit()
-        self.__conn.commit()
 
     def get_user(self, telegram_id: int):
         curs = self.__conn.cursor()
@@ -113,12 +87,12 @@ class DataBase:
 DataBase()
 db = DataBase()
 
-# user = {
-#     "message_id": 91,
-#     "from": {"id": 581069221, "is_bot": "false", "first_name": "Артур", "username": "alterlok", "language_code": "ru"},
-#     "chat": {"id": 581069221, "first_name": "Артур", "username": "alterlok", "type": "private"},
-#     "date": 1665850075,
-#     "text": "1"}
+user = {
+    "message_id": 91,
+    "from": {"id": 581069221, "is_bot": "false", "first_name": "Артур", "username": "alterlok", "language_code": "ru"},
+    "chat": {"id": 581069221, "first_name": "Артур", "username": "alterlok", "type": "private"},
+    "date": 1665850075,
+    "text": "1"}
 
 
 # db.setup(table='Dictionary - Словарь',
