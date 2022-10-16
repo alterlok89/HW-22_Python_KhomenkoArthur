@@ -84,13 +84,13 @@ class DataBase:
 
 DataBase()
 db = DataBase()
-
-user = {
-    "message_id": 91,
-    "from": {"id": 581069221, "is_bot": "false", "first_name": "Артур", "username": "alterlok", "language_code": "ru"},
-    "chat": {"id": 581069221, "first_name": "Артур", "username": "alterlok", "type": "private"},
-    "date": 1665850075,
-    "text": "1"}
+#
+# user = {
+#     "message_id": 91,
+#     "from": {"id": 581069221, "is_bot": "false", "first_name": "Артур", "username": "alterlok", "language_code": "ru"},
+#     "chat": {"id": 581069221, "first_name": "Артур", "username": "alterlok", "type": "private"},
+#     "date": 1665850075,
+#     "text": "1"}
 
 
 # db.setup(table='Dictionary - Словарь',
@@ -107,15 +107,13 @@ user = {
 #                     'translate': 'text not null',
 #                     'example': 'text',
 #                 })
-# db.setup(table='Lessons',
-#                data={
-#                     'lesson id': 'integer primary key autoincrement',
-#                     'the purpose of the lesson': 'text not null',
-#                     'content': 'text not null',
-#                     'audio': 'text',
-#                     'lesson text': 'text',
-#                     'homework': 'text',
-#                 })
+db.setup(table='Lessons',
+               data={
+                    'lesson id': 'integer primary key autoincrement',
+                    'the purpose of the lesson': 'text not null',
+                    'content': 'text not null',
+                    'audio url': 'text',
+                })
 # db.setup(table='Radio',
 #                data={
 #                     'radio id': 'integer primary key autoincrement',
@@ -156,10 +154,24 @@ def dictionary_to_database():
     a = 0
     for i in list_dictionary:
         # time.sleep(3)
-        db.add_item(table='Dictionary - Словарь', data=i)
+        # db.add_item(table='Dictionary - Словарь', data=i)
     # были ошибки проверял, на каком шаге переноса
-    #     print(a, ' - ', i)
+        print(i)
+        print(list(i.keys()))
 
 
+# dictionary_to_database()
 # print(db.get_all_item(table='Dictionary - Словарь'))
 
+# list_lesson = [line.replace('\n', '').replace('«', '').replace('»', '') for line in open('audio_lesson.txt', 'r', encoding="utf-8")]
+
+# добавил в базу аудио уровки
+# for i in range(0, len(list_lesson), 3):
+#     # print(i)
+#     dic = {
+#             'the purpose of the lesson': f'{list_lesson[i]}',
+#             'content': f'{list_lesson[i+1]}',
+#             'audio url': f'{list_lesson[i+2]}',
+#                 }
+#     # print(dic)
+#     db.add_item(table='Lessons', data=dic)

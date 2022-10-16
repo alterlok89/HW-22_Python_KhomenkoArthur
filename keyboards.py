@@ -19,6 +19,7 @@ def get_kbrd():
     return menu
 
 def get_audio_kbrd():
+    url_audio = 'https://dl.dropboxusercontent.com/s/d1pu3sxgyxp48bx/russian_english_001.mp3?dl=0'
     menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1,)
     menu.add(
         KeyboardButton('Урок 1',),
