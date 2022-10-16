@@ -175,3 +175,9 @@ def dictionary_to_database():
 #                 }
 #     # print(dic)
 #     db.add_item(table='Lessons', data=dic)
+
+# dict = db.get_all_item(table='Lessons')
+# print(dict)
+# print(dict[0][1])
+# for i in dict:
+#     print(i[0])

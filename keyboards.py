@@ -19,13 +19,15 @@ def get_kbrd():
     return menu
 
 def get_audio_kbrd():
-    url_audio = 'https://dl.dropboxusercontent.com/s/d1pu3sxgyxp48bx/russian_english_001.mp3?dl=0'
+    db = database.DataBase()
+    dict = db.get_all_item(table='Lessons')
+    # print(dict)
+    # print(dict[0][1])
     menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1,)
-    menu.add(
-        KeyboardButton('Урок 1',),
-        KeyboardButton('Урок 2',),
-        KeyboardButton('Урок 3',),
-    )
+    for i in dict:
+        menu.add(
+            KeyboardButton(f'Урок {i[0]}',)
+        )
     return menu
 
 # bot.send_audio(chat_id, audio.get('url')
@@ -62,3 +64,4 @@ def inline_keyboard(word_list: list, num: int,):
 # list_word = random.sample(dict, 6)
 # num = random.randint(0, 5)
 # inline_keyboard(list_word, num)
+
