@@ -1,11 +1,14 @@
 import os
 
 from aiogram import Bot, Dispatcher, executor, types
+from playsound import playsound
 
 import database
 import keyboards
 import keyboards as kb
 import random
+import pyglet
+
 
 db = database.DataBase()
 
@@ -73,18 +76,31 @@ async def echo(message: types.Message):
             # if message.answer(word_rus, reply_markup=keyboard) == 'Верно!':
             #     count += 1
             #     i += 1
-
     elif message.text == 'Обновить данные профиля':
         keyboard = kb.get_kbrd()
         keyboard.add(types.KeyboardButton('Главное меню'))
         await message.answer(message.text, reply_markup=keyboard)
-
     elif message.text == 'Аудио урок':
         keyboard = kb.get_audio_kbrd()
         keyboard.add(types.KeyboardButton('Главное меню'))
         await message.answer('Выберите урок, который хотите прослушать', reply_markup=keyboard)
+    a = message.text
+    if a.find('Урок') != -1:
+        dict = db.get_all_item(table='Lessons')
+        mes = message.text
+        i = mes.replace('Урок ', '')
+        purpose = dict[int(i)][1]
+        # print(purpose)
+        content = dict[int(i)][2]
+        # print(content)
+        audio_url = dict[int(i)][3]
+        # print(audio_url)
+        # audio = pyglet.media.load('https://dl.dropboxusercontent.com/s/d1pu3sxgyxp48bx/russian_english_001.mp3')
+        await message.answer(purpose)
+        await message.answer(content)
+        # await bot.send_audio(chat_id=message.from_user.id, audio=audio, )
 
-
+    print(message.text)
 
     # url_audio = 'https://dl.dropboxusercontent.com/s/d1pu3sxgyxp48bx/russian_english_001.mp3?dl=0'
     # bot.send_audio(chat_id, audio.get(url_audio))
