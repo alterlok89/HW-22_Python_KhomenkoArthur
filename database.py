@@ -1,4 +1,4 @@
-import sqlite3, json, time
+import sqlite3, json, time, random
 
 
 class DataBase:
@@ -75,6 +75,18 @@ class DataBase:
         self.__conn.commit()
         self.__conn.close()
 
+    def get_word_translete(self, word: str):
+        curs = self.__conn.cursor()
+
+        req = f'SELECT * FROM "Dictionary - Словарь" WHERE word="{word}"'
+        # print(req)
+        select = curs.execute(req,)
+        select_data = select.fetchone()
+        # print(select_data)
+        self.__conn.commit()
+        if select_data != None:
+            return select_data
+
     def delete_item(self, table: str, item_text):
         pass
 
@@ -104,16 +116,17 @@ db = DataBase()
 #                data={
 #                     'idioms id': 'integer primary key autoincrement',
 #                     'idiom': 'text not null',
+#                     'synonym': 'text',
 #                     'translate': 'text not null',
 #                     'example': 'text',
 #                 })
-db.setup(table='Lessons',
-               data={
-                    'lesson id': 'integer primary key autoincrement',
-                    'the purpose of the lesson': 'text not null',
-                    'content': 'text not null',
-                    'audio url': 'text',
-                })
+# db.setup(table='Lessons',
+#                data={
+#                     'lesson id': 'integer primary key autoincrement',
+#                     'the purpose of the lesson': 'text not null',
+#                     'content': 'text not null',
+#                     'audio url': 'text',
+#                 })
 # db.setup(table='Radio',
 #                data={
 #                     'radio id': 'integer primary key autoincrement',
@@ -162,22 +175,65 @@ def dictionary_to_database():
 
 # dictionary_to_database()
 # print(db.get_all_item(table='Dictionary - Словарь'))
+# добавил в базу аудио уроки
+def audio_to_base():
+    list_lesson = [line.replace('\n', '').replace('«', '').replace('»', '') for line in open('audio_lesson.txt', 'r', encoding="utf-8")]
+    for i in range(0, len(list_lesson), 3):
+        # print(i)
+        dic = {
+                'the purpose of the lesson': f'{list_lesson[i]}',
+                'content': f'{list_lesson[i+1]}',
+                'audio url': f'{list_lesson[i+2]}',
+                    }
+        # print(dic)
+        db.add_item(table='Lessons', data=dic)
 
-# list_lesson = [line.replace('\n', '').replace('«', '').replace('»', '') for line in open('audio_lesson.txt', 'r', encoding="utf-8")]
-
-# добавил в базу аудио уровки
-# for i in range(0, len(list_lesson), 3):
-#     # print(i)
-#     dic = {
-#             'the purpose of the lesson': f'{list_lesson[i]}',
-#             'content': f'{list_lesson[i+1]}',
-#             'audio url': f'{list_lesson[i+2]}',
-#                 }
-#     # print(dic)
-#     db.add_item(table='Lessons', data=dic)
 
 # dict = db.get_all_item(table='Lessons')
 # print(dict)
 # print(dict[0][1])
 # for i in dict:
 #     print(i[0])
+
+# добавил в базу idioms
+def idiom_to_base():
+    list_idiom = [line.replace('\n', '') for line in open('idioms.txt', 'r', encoding="utf-8")]
+
+    # print(list_idiom)
+    # print(list_idiom[0])
+    # print(list_idiom[1])
+    # print(list_idiom[2])
+    # print(list_idiom[3])
+    a = 0
+
+    for i in range(0, len(list_idiom), 4):
+        # print(list_idiom[i], ' - ', list_idiom[i+1], '\n', list_idiom[i+2], '\n', list_idiom[i+3])
+        dic={
+            'idiom': list_idiom[i],
+            'synonym': list_idiom[i+1],
+            'translate': list_idiom[i+2],
+            'example': list_idiom[i+3],
+                    }
+        # print(dic)
+        db.add_item(table='Idioms', data=dic)
+
+
+# idiom_to_base()
+
+# 'aback'
+# w = db.get_word_translete('aback')
+# print('ID - ', w[0])
+# print('word - ', w[1])
+# print('transcription - ', w[2])
+# print('translate - ', w[3].replace('"', '').replace('[', '').replace(']', '').replace('\'', ''))
+
+# dict = db.get_all_item(table='Idioms')
+# list_idiom = random.sample(dict, 4)
+# num = random.randint(0, 3)
+# print(list_idiom[0])
+# print(list_idiom[0][1])
+# print(list_idiom[0][3])
+#
+# idiom = list_idiom[num][1].replace('"', '')
+# print(idiom)
+# idiom = list_idiom[num][1].replace('"', '').replace('[', '').replace(']', '').replace('\'', '')

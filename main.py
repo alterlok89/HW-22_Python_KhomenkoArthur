@@ -69,9 +69,28 @@ async def echo(message: types.Message):
         num = random.randint(0, 5)
         word_rus = list_word[num][3].replace('"', '').replace('[', '').replace(']', '').replace('\'', '')
         list_en_word = [i[1] for i in list_word]
-        keyboard = kb.inline_keyboard(list_en_word, num,)
-        await message.answer(word_rus, reply_markup=keyboard)
-        print(message)
+        keyboard = kb.inline_keyboard_word(list_en_word, num,)
+        await message.answer(word_rus, reply_markup=keyboard,)
+        # print(message)
+        # print(answer)
+            # if message.answer(word_rus, reply_markup=keyboard) == 'Верно!':
+            #     count += 1
+            #     i += 1
+    elif message.text == '/idiom_test' or message.text == 'Тест на знание идиом':
+        i = 0
+        count = 0
+        await message.answer('Вам предложат английскую идиому, '
+                             'а так же 4 варианта их перевода.\n'
+                             'Постарайтесь ответить правильно! Удачи!')
+
+        dict = db.get_all_item(table='Idioms')
+        list_idiom = random.sample(dict, 4)
+        num = random.randint(0, 3)
+        idiom = list_idiom[num][1].replace('"', '')
+        list_translate_idiom = [i[3] for i in list_idiom]
+        keyboard = kb.inline_keyboard_idiom(list_translate_idiom, num,)
+        await message.answer(idiom, reply_markup=keyboard,)
+        # print(message)
         # print(answer)
             # if message.answer(word_rus, reply_markup=keyboard) == 'Верно!':
             #     count += 1
@@ -98,9 +117,9 @@ async def echo(message: types.Message):
         # audio = pyglet.media.load('https://dl.dropboxusercontent.com/s/d1pu3sxgyxp48bx/russian_english_001.mp3')
         await message.answer(purpose)
         await message.answer(content)
-        # await bot.send_audio(chat_id=message.from_user.id, audio=audio, )
+        await bot.send_audio(message.from_user.id, open("russian_english_001.mp3", "r"), performer = "Performer", title = "Title")
 
-    print(message.text)
+    # print(message.text)
 
     # url_audio = 'https://dl.dropboxusercontent.com/s/d1pu3sxgyxp48bx/russian_english_001.mp3?dl=0'
     # bot.send_audio(chat_id, audio.get(url_audio))

@@ -33,7 +33,7 @@ def get_audio_kbrd():
 # bot.send_audio(chat_id, audio.get('url')
 
 # тест на слова
-def inline_keyboard(word_list: list, num: int,):
+def inline_keyboard_word(word_list: list, num: int,):
     btn_list = []
     for i in word_list:
         # print(i)
@@ -42,7 +42,7 @@ def inline_keyboard(word_list: list, num: int,):
             btn_list.append(InlineKeyboardButton(text=i, callback_data='Верно!'))
         else:
             btn_list.append(InlineKeyboardButton(text=i, callback_data='Не верно!'))
-    kbrd = InlineKeyboardMarkup().add(btn_list[0], btn_list[1], btn_list[2], btn_list[3], btn_list[4], btn_list[5],)
+    kbrd = InlineKeyboardMarkup(row_width=1).add(btn_list[0], btn_list[1], btn_list[2], btn_list[3], btn_list[4], btn_list[5],)
     # btn1 = InlineKeyboardButton(text=str(list_en_word[1]),)
     # btn2 = InlineKeyboardButton(text=str(list_en_word[2]),)
     # btn3 = InlineKeyboardButton(text=str(list_en_word[3]),)
@@ -65,3 +65,15 @@ def inline_keyboard(word_list: list, num: int,):
 # num = random.randint(0, 5)
 # inline_keyboard(list_word, num)
 
+def inline_keyboard_idiom(idiom_list: list, num: int,):
+    btn_list = []
+    for i in idiom_list:
+        # print(i)
+        # print(type(i))
+        if i == idiom_list[num]:
+            btn_list.append(InlineKeyboardButton(text=i, callback_data='Верно!'))
+        else:
+            btn_list.append(InlineKeyboardButton(text=i, callback_data='Не верно!'))
+    kbrd = InlineKeyboardMarkup(row_width=1).add(btn_list[0], btn_list[1], btn_list[2], btn_list[3],)
+
+    return kbrd
