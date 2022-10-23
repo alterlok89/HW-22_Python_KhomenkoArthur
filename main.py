@@ -1,4 +1,5 @@
 import os
+import time
 
 from aiogram import Bot, Dispatcher, executor, types
 from playsound import playsound
@@ -71,11 +72,12 @@ async def echo(message: types.Message):
         list_en_word = [i[1] for i in list_word]
         keyboard = kb.inline_keyboard_word(list_en_word, num,)
         await message.answer(word_rus, reply_markup=keyboard,)
-        # print(message)
-        # print(answer)
-            # if message.answer(word_rus, reply_markup=keyboard) == 'Верно!':
-            #     count += 1
-            #     i += 1
+
+            # print(message)
+            # print(answer)
+                # if message.answer(word_rus, reply_markup=keyboard) == 'Верно!':
+                #     count += 1
+                #     i += 1
     elif message.text == '/idiom_test' or message.text == 'Тест на знание идиом':
         i = 0
         count = 0
@@ -90,8 +92,7 @@ async def echo(message: types.Message):
         list_translate_idiom = [i[3] for i in list_idiom]
         keyboard = kb.inline_keyboard_idiom(list_translate_idiom, num,)
         await message.answer(idiom, reply_markup=keyboard,)
-        # print(message)
-        # print(answer)
+        print(message.text)
             # if message.answer(word_rus, reply_markup=keyboard) == 'Верно!':
             #     count += 1
             #     i += 1
@@ -103,21 +104,22 @@ async def echo(message: types.Message):
         keyboard = kb.get_audio_kbrd()
         keyboard.add(types.KeyboardButton('Главное меню'))
         await message.answer('Выберите урок, который хотите прослушать', reply_markup=keyboard)
-    a = message.text
-    if a.find('Урок') != -1:
+    lesson = message.text
+    if lesson.find('Урок') != -1:
         dict = db.get_all_item(table='Lessons')
         mes = message.text
-        i = mes.replace('Урок ', '')
-        purpose = dict[int(i)][1]
+        i = int(mes.replace('Урок ', ''))
+        i -= 1
+        purpose = dict[i][1]
         # print(purpose)
-        content = dict[int(i)][2]
+        content = dict[i][2]
         # print(content)
-        audio_url = dict[int(i)][3]
+        audio_url = dict[i][3]
         # print(audio_url)
-        # audio = pyglet.media.load('https://dl.dropboxusercontent.com/s/d1pu3sxgyxp48bx/russian_english_001.mp3')
+
         await message.answer(purpose)
         await message.answer(content)
-        await bot.send_audio(message.from_user.id, open("russian_english_001.mp3", "r"), performer = "Performer", title = "Title")
+        await message.answer_audio(audio_url)
 
     # print(message.text)
 
