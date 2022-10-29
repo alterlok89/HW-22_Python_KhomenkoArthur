@@ -198,14 +198,7 @@ def audio_to_base():
 # добавил в базу idioms
 def idiom_to_base():
     list_idiom = [line.replace('\n', '') for line in open('idioms.txt', 'r', encoding="utf-8")]
-
-    # print(list_idiom)
-    # print(list_idiom[0])
-    # print(list_idiom[1])
-    # print(list_idiom[2])
-    # print(list_idiom[3])
     a = 0
-
     for i in range(0, len(list_idiom), 4):
         # print(list_idiom[i], ' - ', list_idiom[i+1], '\n', list_idiom[i+2], '\n', list_idiom[i+3])
         dic={

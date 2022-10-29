@@ -2,11 +2,18 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemo
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import database, random
 
-menu = ['Начало работы', 'Аудио урок', 'Тест на знание слов', 'Тест на знание идиом', 'Перевод слова', 'Идиомы', 'Радио', 'Обновить данные профиля']
+menu = [
+        'Аудио урок',
+        'Тест на знание слов',
+        'Тест на знание идиом',
+        'Переводчик', 'Идиомы',
+        ]
 
 keyboard_menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+keyboard_menu.add(KeyboardButton('Главное меню'))
 for i in menu:
     keyboard_menu.insert(i)
+keyboard_menu.add(KeyboardButton('Обновить данные профиля'))
 
 
 def get_kbrd():
@@ -16,6 +23,7 @@ def get_kbrd():
     menu.row(
         KeyboardButton('Телефон', request_contact=True),
         KeyboardButton('Местонахождение', request_location=True))
+    menu.add(KeyboardButton('Главное меню'))
     return menu
 
 def get_audio_kbrd():
@@ -28,9 +36,11 @@ def get_audio_kbrd():
         menu.add(
             KeyboardButton(f'Урок {i[0]}',)
         )
+    menu.add(KeyboardButton('Главное меню'))
     return menu
 
 # bot.send_audio(chat_id, audio.get('url')
+
 
 # тест на слова
 def inline_keyboard_word(word_list: list, num: int,):
@@ -42,21 +52,8 @@ def inline_keyboard_word(word_list: list, num: int,):
             btn_list.append(InlineKeyboardButton(text=i, callback_data='Верно!'))
         else:
             btn_list.append(InlineKeyboardButton(text=i, callback_data='Не верно!'))
+
     kbrd = InlineKeyboardMarkup(row_width=1).add(btn_list[0], btn_list[1], btn_list[2], btn_list[3], btn_list[4], btn_list[5],)
-    # btn1 = InlineKeyboardButton(text=str(list_en_word[1]),)
-    # btn2 = InlineKeyboardButton(text=str(list_en_word[2]),)
-    # btn3 = InlineKeyboardButton(text=str(list_en_word[3]),)
-    # btn4 = InlineKeyboardButton(text=str(list_en_word[4]),)
-    # btn5 = InlineKeyboardButton(text=str(list_en_word[5]),)
-    # kbrd = InlineKeyboardMarkup().add(btn, btn1, btn2, btn3, btn4, btn5)
-    #     answer = input('Введите ответ: ')
-    # if answer == list_word[num][1]:
-    #     print('Верно!')
-    #     count +=1
-    # else:
-    #     print('Не верно!')
-    #     i += 1
-    # print(f'Правильных ответов - {count}')
     return kbrd
 
 # db = database.DataBase()
