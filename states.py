@@ -2,11 +2,12 @@ from aiogram.utils.helper import Helper, ListItem, HelperMode
 
 
 class MyStates(Helper):
-    # mode = HelperMode.snake_case
+    mode = HelperMode.snake_case
 
     STATES_0 = ListItem()
     STATES_1 = ListItem()
     STATES_2 = ListItem()
+    STATES_3 = ListItem()
 
 
 

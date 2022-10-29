@@ -22,7 +22,7 @@ def get_kbrd():
     #     menu.insert(KeyboardButton(user[3]))
     menu.row(
         KeyboardButton('Телефон', request_contact=True),
-        KeyboardButton('Местонахождение', request_location=True))
+        KeyboardButton('Email',))
     menu.add(KeyboardButton('Главное меню'))
     return menu
 
