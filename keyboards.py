@@ -14,6 +14,7 @@ keyboard_menu.add(KeyboardButton('Главное меню'))
 for i in menu:
     keyboard_menu.insert(i)
 keyboard_menu.add(KeyboardButton('Обновить данные профиля'))
+keyboard_menu.add(KeyboardButton('Просмотреть мои данные'))
 
 
 def get_kbrd():

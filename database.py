@@ -87,6 +87,16 @@ class DataBase:
         if select_data != None:
             return select_data
 
+    def update_user(self, telegram_id: int, data: dict):
+        key = list(data.keys())[0]
+        value = list(data.values())[0]
+        req = f'UPDATE Users SET {key} = "{value}" WHERE telegram_id="{telegram_id}"'
+        self.__conn.cursor()
+        self.__conn.execute(req)
+        self.__conn.commit()
+
+
+
     def delete_item(self, table: str, item_text):
         pass
 
@@ -230,3 +240,22 @@ def idiom_to_base():
 # idiom = list_idiom[num][1].replace('"', '')
 # print(idiom)
 # idiom = list_idiom[num][1].replace('"', '').replace('[', '').replace(']', '').replace('\'', '')
+id = 581069221
+# dic={
+#         'phone': '12345',
+#     }
+# dic2={
+#         'email': 'afas@asa',
+#     }
+#
+# print(list(dic.keys())[0])
+# print(list(dic.values())[0])
+
+
+# db.update_user(telegram_id=id, data=dic)
+# db.update_user(telegram_id=id, data=dic2)
+# a = db.get_user(telegram_id=id)
+# print(a)
+# print(a[0])
+# print(a[0][0])
+#

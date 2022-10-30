@@ -30,10 +30,17 @@ callback_idiom_test = {}
 @dp.message_handler(content_types='contact', state=MyStates.STATES_3)
 async def ph(message: types.Message):
 
-    print('--')
-    print(message)
-    print(message.contact.phone_number)
-    print(message.from_id)
+    # print('--')
+    # print(message)
+    # print(message.contact.phone_number)
+    # print(message.from_id)
+    state = dp.current_state(user=chat_id)
+
+    phone={
+            'phone': message.contact.phone_number,
+        }
+    db.update_user(telegram_id=message.from_id, data=phone)
+    # await state.set_state(MyStates.all()[4])
 
 
 @dp.message_handler(state=MyStates.STATES_0)
@@ -106,11 +113,35 @@ async def translate(message: types.Message):
 
 @dp.message_handler(state=MyStates.STATES_3)
 async def user_data(message: types.Message):
+    state = dp.current_state(user=message.from_user.id)
+    if message.text == 'Главное меню':
+        keyboard = kb.keyboard_menu
+        await message.answer(message.text, reply_markup=keyboard)
+        await state.set_state('*')
+    elif message.text == 'Email':
+        text = 'Введите свой email'
+        await bot.send_message(chat_id=message.from_user.id, text=text)
+        await state.set_state(MyStates.all()[4])
 
-    print('--')
-    print(message)
-    print(message.contact.phone_number)
-    print(message.from_id)
+
+@dp.message_handler(state=MyStates.STATES_4)
+async def user_data(message: types.Message):
+
+    state = dp.current_state(user=message.from_user.id)
+    # print('--')
+    # print(message.text)
+    # print(message.from_id)
+    email = {
+            'email': message.text,
+        }
+    # print(email)
+    db.update_user(telegram_id=message.from_id, data=email)
+    await state.set_state(MyStates.all()[3])
+
+    if message.text == 'Главное меню':
+        keyboard = kb.keyboard_menu
+        await message.answer(message.text, reply_markup=keyboard)
+        await state.set_state('*')
 
 @dp.message_handler(state='*')
 async def echo(message: types.Message):
@@ -215,6 +246,18 @@ async def echo(message: types.Message):
         state = dp.current_state(user=chat_id)
         await message.answer('Введите слово или фразу для перевода')
         await state.set_state(MyStates.all()[2])
+
+    elif message.text == 'Просмотреть мои данные':
+        user = db.get_user(message.from_user.id)
+        user_text = f'Ваш профиль:\n' \
+                    f'telegram_id: {user[0][0]}\n' \
+                    f'first_name: {user[0][1]}\n' \
+                    f'last_name: {user[0][2]}\n' \
+                    f'username: {user[0][3]}\n' \
+                    f'phone: {user[0][4]}\n' \
+                    f'email: {user[0][5]}\n' \
+                    f'language_code: {user[0][8]}'
+        await message.answer(user_text)
 
 @dp.callback_query_handler(state=MyStates.STATES_0)
 async def call_word(callback_q: types.CallbackQuery, ):
