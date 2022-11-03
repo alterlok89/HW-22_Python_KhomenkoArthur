@@ -216,7 +216,7 @@ async def echo(message: types.Message):
                f'{emoji.emojize("➡️")}Example: {idiom[0][4]}'
         await message.answer(text)
 
-    elif message.text == 'Обновить данные профиля':
+    elif message.text == '/contacts'  or message.text == 'Обновить данные профиля':
 
         state = dp.current_state(user=chat_id)
         keyboard = kb.get_kbrd()
@@ -224,7 +224,7 @@ async def echo(message: types.Message):
         await message.answer(message.text, reply_markup=keyboard)
 
 
-    elif message.text == 'Аудио урок':
+    elif message.text == 'Аудио урок' or message.text == '/lessons':
 
         keyboard = kb.get_audio_kbrd()
         await message.answer(
@@ -239,9 +239,11 @@ async def echo(message: types.Message):
         mes = message.text
         i = int(mes.replace('Урок ', ''))
         i -= 1
-        purpose = f'{dict[i][1]}'
+        purpose = f'{emoji.emojize("✅")}{dict[i][1]}\n' \
+                  f'{emoji.emojize("⤵️")}Содержание урока{emoji.emojize("⤵️")}'
         # print(purpose)
-        content = f'{dict[i][2]}'
+        content = f'{emoji.emojize("✅")}{dict[i][2]}\n' \
+                  f'{emoji.emojize("⤵️")}Прослушайте аудио урок ниже{emoji.emojize("⤵️")}'
         # print(content)
         audio_url = dict[i][3]
         # print(audio_url)
