@@ -13,6 +13,7 @@ import keyboards as kb
 import random
 import translators as ts
 import re
+import emoji
 
 
 db = database.DataBase()
@@ -53,7 +54,7 @@ async def word_test(message: types.Message):
 
     if message.text == '/cancel':
 
-        await message.answer('Закончить тест')
+        await message.answer(f'{emoji.emojize("⚠️⚠️")}Тест завершен{emoji.emojize("⚠️⚠️")}')
         await state.set_state('*')
     else:
         dict = db.get_all_item(table='Dictionary - Словарь')
@@ -72,7 +73,7 @@ async def idiom_test(message: types.Message):
 
     if message.text == '/cancel':
 
-        await message.answer('Закончить тест')
+        await message.answer(f'{emoji.emojize("⚠️⚠️")}Тест завершен{emoji.emojize("⚠️⚠️")}')
         await state.set_state('*')
     else:
         dict = db.get_all_item(table='Idioms')
@@ -92,24 +93,24 @@ async def translate(message: types.Message):
     chat_id = message.from_user.id
 
     if message.text == '/cancel':
-        await message.answer('Закончить перевод')
+        await message.answer(f'{emoji.emojize("⚠️⚠️")}Переводчик остановлен{emoji.emojize("⚠️⚠️")}')
         await state.set_state('*')
     else:
         if bool(re.search('[а-яА-Я]', message.text)) == False:
             # print('Перевод с английского')
             translate = ts.google(message.text, to_language='ru')
             # print(translate)
-            await message.answer('Перевод с английского')
+            await message.answer(f'{emoji.emojize("❗❗")} Перевод с английского{emoji.emojize("🇬🇧🇬🇧➡️🇷🇺🇷🇺")}')
             await bot.send_message(chat_id=message.from_user.id, text=translate)
 
         else:
             # print('Перевод с русского')
             translate = ts.google(message.text, to_language='en')
             # print(translate)
-            await message.answer('Перевод с русского')
+            await message.answer(f'{emoji.emojize("❗❗")} Перевод {emoji.emojize("🇷🇺🇷🇺➡️🇬🇧🇬🇧")}')
             await bot.send_message(chat_id=message.from_user.id, text=translate)
 
-        await message.answer('Для остановки переводчика введите /cancel')
+        await message.answer(f'{emoji.emojize("⛔")}/cancel - закончить перевод{emoji.emojize("⛔")}\n')
 
 @dp.message_handler(state=MyStates.STATES_3)
 async def user_data(message: types.Message):
@@ -119,7 +120,7 @@ async def user_data(message: types.Message):
         await message.answer(message.text, reply_markup=keyboard)
         await state.set_state('*')
     elif message.text == 'Email':
-        text = 'Введите свой email'
+        text = f'{emoji.emojize("📧")} Введите свой email {emoji.emojize("📧")}'
         await bot.send_message(chat_id=message.from_user.id, text=text)
         await state.set_state(MyStates.all()[4])
 
@@ -184,9 +185,11 @@ async def echo(message: types.Message):
         callback_word_test.update({message.from_user.id: []})
         state = dp.current_state(user=chat_id)
         await message.answer(
-                'Вам предложат значение слова на русском языке, '
-                'а так же 6 вариантов ответов на них.\n'
-                'В тесте 10 вопросов')
+                f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")} Вам предложат значение слова на русском языке, '
+                f'а так же 6 вариантов ответов на них.{emoji.emojize("🇬🇧🇬🇧🇬🇧")}\n'
+                f'{emoji.emojize("⛔")}/cancel - выйти из теста{emoji.emojize("⛔")}\n'
+                f'{emoji.emojize("👇👇👇")}В тесте 10 вопросов {emoji.emojize("👇👇👇")}'
+                )
         await state.set_state(MyStates.all()[0])
         # print(message)
         await word_test(message)
@@ -195,9 +198,11 @@ async def echo(message: types.Message):
 
         callback_idiom_test.update({message.from_user.id: []})
         state = dp.current_state(user=chat_id)
-        await message.answer('Вам предложат английскую идиому, '
-                             'а так же 4 варианта их перевода.\n'
-                             'В тесте 6 вопросов')
+        await message.answer(
+                            f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")}Вам предложат английскую идиому, '
+                            f'а так же 4 варианта их перевода.{emoji.emojize("🇬🇧🇬🇧🇬🇧")}\n'
+                            f'{emoji.emojize("⛔")}/cancel - выйти из теста{emoji.emojize("⛔")}\n'
+                            f'{emoji.emojize("👇👇👇")}В тесте 6 вопросов{emoji.emojize("👇👇👇")}')
         await state.set_state(MyStates.all()[1])
         await idiom_test(message)
 
@@ -205,10 +210,10 @@ async def echo(message: types.Message):
 
         dict = db.get_all_item(table='Idioms')
         idiom = random.sample(dict, 1)
-        text = f'Idiom: {idiom[0][1]}\n' \
-               f'Synonym: {idiom[0][2]}\n' \
-               f'Translate: {idiom[0][3]}\n' \
-               f'Example: {idiom[0][4]}'
+        text = f'{emoji.emojize("➡️")}Idiom: {idiom[0][1]}\n' \
+               f'{emoji.emojize("➡️")}Synonym: {idiom[0][2]}\n' \
+               f'{emoji.emojize("➡️")}Translate: {idiom[0][3]}\n' \
+               f'{emoji.emojize("➡️")}Example: {idiom[0][4]}'
         await message.answer(text)
 
     elif message.text == 'Обновить данные профиля':
@@ -222,7 +227,10 @@ async def echo(message: types.Message):
     elif message.text == 'Аудио урок':
 
         keyboard = kb.get_audio_kbrd()
-        await message.answer('Выберите урок, который хотите прослушать', reply_markup=keyboard)
+        await message.answer(
+                        f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")}Выберите урок, который хотите прослушать{emoji.emojize("🇬🇧🇬🇧🇬🇧")}',
+                        reply_markup=keyboard
+                            )
 
     lesson = message.text
     if lesson.find('Урок') != -1:
@@ -231,9 +239,9 @@ async def echo(message: types.Message):
         mes = message.text
         i = int(mes.replace('Урок ', ''))
         i -= 1
-        purpose = dict[i][1]
+        purpose = f'{dict[i][1]}'
         # print(purpose)
-        content = dict[i][2]
+        content = f'{dict[i][2]}'
         # print(content)
         audio_url = dict[i][3]
         # print(audio_url)
@@ -244,19 +252,19 @@ async def echo(message: types.Message):
     elif message.text == '/translate' or message.text == 'Переводчик':
 
         state = dp.current_state(user=chat_id)
-        await message.answer('Введите слово или фразу для перевода')
+        await message.answer(f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")}Введите слово или фразу для перевода{emoji.emojize("🇬🇧🇬🇧🇬🇧")}')
         await state.set_state(MyStates.all()[2])
 
     elif message.text == 'Просмотреть мои данные':
         user = db.get_user(message.from_user.id)
-        user_text = f'Ваш профиль:\n' \
-                    f'telegram_id: {user[0][0]}\n' \
-                    f'first_name: {user[0][1]}\n' \
-                    f'last_name: {user[0][2]}\n' \
-                    f'username: {user[0][3]}\n' \
-                    f'phone: {user[0][4]}\n' \
-                    f'email: {user[0][5]}\n' \
-                    f'language_code: {user[0][8]}'
+        user_text = f'{emoji.emojize("🙂🙃🙂")}Ваш профиль:{emoji.emojize("🙂🙃🙂")}\n' \
+                    f'{emoji.emojize("🔑")}telegram_id:  {user[0][0]}\n' \
+                    f'{emoji.emojize("👤")}first_name:   {user[0][1]}\n' \
+                    f'{emoji.emojize("😎")}last_name:    {user[0][2]}\n' \
+                    f'{emoji.emojize("🤖")}username: {user[0][3]}\n' \
+                    f'{emoji.emojize("📱")}phone:    {user[0][4]}\n' \
+                    f'{emoji.emojize("📧")}email:    {user[0][5]}\n' \
+                    f'{emoji.emojize("🏳️")}language_code:   {user[0][8]}'
         await message.answer(user_text)
 
 @dp.callback_query_handler(state=MyStates.STATES_0)
@@ -280,13 +288,17 @@ async def call_word(callback_q: types.CallbackQuery, ):
                 en_word = i[0]['text']
                 # print(en_word)
         # print('Верный ответ - ', en_word, end='\n')
-        callback_text = f'Верный ответ - {en_word}'
+        callback_text = f'{emoji.emojize("❗❗")} Верный ответ - {en_word} {emoji.emojize("❗❗")}'
         await bot.send_message(chat_id=callback_q.from_user.id, text=callback_text)
+
+    question = num - len(callback_word_test[callback_q.from_user.id])
+    await bot.send_message(chat_id=callback_q.from_user.id, text=f'{emoji.emojize("💡")} Осталось {question} вопросов из {num} {emoji.emojize("💡")}')
+    await bot.send_message(chat_id=callback_q.from_user.id, text=f'{emoji.emojize("⛔")}/cancel - выйти из теста{emoji.emojize("⛔")}')
 
     if len(callback_word_test[callback_q.from_user.id]) == num:
 
         correct_answer = [i for i in callback_word_test[callback_q.from_user.id] if i == 'Верно!']
-        correct_answer_text = f'Вы сделали в тесте {len(correct_answer)} ' \
+        correct_answer_text = f'Вы сделали в тесте {emoji.emojize("👍")} {len(correct_answer)} {emoji.emojize("👍")}' \
                               f'правильных ответов из {len(callback_word_test[callback_q.from_user.id])}'
 
         await bot.send_message(chat_id=callback_q.from_user.id, text=correct_answer_text)
@@ -317,14 +329,18 @@ async def call_idiom(callback_q: types.CallbackQuery, ):
                 ru_text = i[0]['text']
                 # print(ru_text)
         # print('Верный ответ - ', ru_text, end='\n')
-        callback_text = f'Верный ответ - {ru_text}'
+        callback_text = f'{emoji.emojize("❗❗")} Верный ответ - {ru_text} {emoji.emojize("❗❗")}'
         await bot.send_message(chat_id=callback_q.from_user.id, text=callback_text)
+
+    question = num - len(callback_idiom_test[callback_q.from_user.id])
+    await bot.send_message(chat_id=callback_q.from_user.id, text=f'{emoji.emojize("💡")} Осталось {question} вопросов из {num} {emoji.emojize("💡")}')
+    await bot.send_message(chat_id=callback_q.from_user.id, text=f'{emoji.emojize("⛔")}/cancel - выйти из теста{emoji.emojize("⛔")}')
     # await bot.send_message(chat_id=callback_q.from_user.id, text='/cancel - для остановки теста')
 
     if len(callback_idiom_test[callback_q.from_user.id]) == num:
 
         correct_answer = [i for i in callback_idiom_test[callback_q.from_user.id] if i == 'Верно!']
-        correct_answer_text = f'Вы сделали в тесте {len(correct_answer)} ' \
+        correct_answer_text = f'Вы сделали в тесте {emoji.emojize("👍")}{len(correct_answer)}{emoji.emojize("👍")}' \
                               f'правильных ответов из {len(callback_idiom_test[callback_q.from_user.id])}'
 
         await bot.send_message(chat_id=callback_q.from_user.id, text=correct_answer_text)
