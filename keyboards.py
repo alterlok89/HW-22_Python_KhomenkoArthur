@@ -32,12 +32,22 @@ def get_audio_kbrd():
     dict = db.get_all_item(table='Lessons')
     # print(dict)
     # print(dict[0][1])
-    menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1,)
-    for i in dict:
-        menu.add(
-            KeyboardButton(f'Урок {i[0]}',)
+    menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=5,)
+    for i in range(0, len(dict), 5):
+        # print(i)
+        menu.row(
+            KeyboardButton(f'Урок {i+1}',),
+            KeyboardButton(f'Урок {i+2}',),
+            KeyboardButton(f'Урок {i+3}',),
+            KeyboardButton(f'Урок {i+4}',),
+            KeyboardButton(f'Урок {i+5}',),
         )
-    menu.add(KeyboardButton('Главное меню'))
+        menu.add(KeyboardButton('Главное меню'))
+    # for i in dict:
+    #     menu.row(
+    #         KeyboardButton(f'Урок {i[0]}',)
+    #     )
+    #     menu.add(KeyboardButton('Главное меню'))
     return menu
 
 # bot.send_audio(chat_id, audio.get('url')
@@ -75,3 +85,14 @@ def inline_keyboard_idiom(idiom_list: list, num: int,):
     kbrd = InlineKeyboardMarkup(row_width=1).add(btn_list[0], btn_list[1], btn_list[2], btn_list[3],)
 
     return kbrd
+
+
+def get_kbrd_test():
+    menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+    menu.add(KeyboardButton('Завершить тест'))
+    return menu
+
+def get_kbrd_translate():
+    menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+    menu.add(KeyboardButton('Завершить перевод'))
+    return menu

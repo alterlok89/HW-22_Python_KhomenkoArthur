@@ -52,9 +52,10 @@ async def word_test(message: types.Message):
     i = 0
     count = 0
 
-    if message.text == '/cancel':
+    if message.text == '/cancel' or message.text == 'Завершить тест':
 
-        await message.answer(f'{emoji.emojize("⚠️⚠️")}Тест завершен{emoji.emojize("⚠️⚠️")}')
+        keyboard = kb.keyboard_menu
+        await message.answer(f'{emoji.emojize("⚠️⚠️")}Тест завершен{emoji.emojize("⚠️⚠️")}', reply_markup=keyboard,)
         await state.set_state('*')
     else:
         dict = db.get_all_item(table='Dictionary - Словарь')
@@ -71,9 +72,10 @@ async def idiom_test(message: types.Message):
 
     state = dp.current_state(user=message.from_user.id)
 
-    if message.text == '/cancel':
+    if message.text == '/cancel' or message.text == 'Завершить тест':
 
-        await message.answer(f'{emoji.emojize("⚠️⚠️")}Тест завершен{emoji.emojize("⚠️⚠️")}')
+        keyboard = kb.keyboard_menu
+        await message.answer(f'{emoji.emojize("⚠️⚠️")}Тест завершен{emoji.emojize("⚠️⚠️")}', reply_markup=keyboard,)
         await state.set_state('*')
     else:
         dict = db.get_all_item(table='Idioms')
@@ -92,8 +94,10 @@ async def translate(message: types.Message):
     state = dp.current_state(user=message.from_user.id)
     chat_id = message.from_user.id
 
-    if message.text == '/cancel':
-        await message.answer(f'{emoji.emojize("⚠️⚠️")}Переводчик остановлен{emoji.emojize("⚠️⚠️")}')
+    if message.text == '/cancel' or message.text == 'Завершить перевод':
+
+        keyboard = kb.keyboard_menu
+        await message.answer(f'{emoji.emojize("⚠️⚠️")}Переводчик остановлен{emoji.emojize("⚠️⚠️")}', reply_markup=keyboard,)
         await state.set_state('*')
     else:
         if bool(re.search('[а-яА-Я]', message.text)) == False:
@@ -156,6 +160,8 @@ async def echo(message: types.Message):
                 'username': f'{message.from_user.username}',
                 'is_bot': f'{message.from_user.is_bot}',
                 'language_code': f'{message.from_user.language_code}',
+                'statistics_word_test': '0:0:0',
+                'statistics_idiom_test': '0:0:0',
                 }
     # print(user)
     users.update({message.from_user.id: {message.from_user.first_name: message.from_user.username}})
@@ -184,12 +190,13 @@ async def echo(message: types.Message):
 
         callback_word_test.update({message.from_user.id: []})
         state = dp.current_state(user=chat_id)
+        keyboard = kb.get_kbrd_test()
         await message.answer(
                 f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")} Вам предложат значение слова на русском языке, '
                 f'а так же 6 вариантов ответов на них.{emoji.emojize("🇬🇧🇬🇧🇬🇧")}\n'
                 f'{emoji.emojize("⛔")}/cancel - выйти из теста{emoji.emojize("⛔")}\n'
-                f'{emoji.emojize("👇👇👇")}В тесте 10 вопросов {emoji.emojize("👇👇👇")}'
-                )
+                f'{emoji.emojize("👇👇👇")}В тесте 10 вопросов {emoji.emojize("👇👇👇")}',
+                reply_markup=keyboard)
         await state.set_state(MyStates.all()[0])
         # print(message)
         await word_test(message)
@@ -198,11 +205,13 @@ async def echo(message: types.Message):
 
         callback_idiom_test.update({message.from_user.id: []})
         state = dp.current_state(user=chat_id)
+        keyboard = kb.get_kbrd_test()
         await message.answer(
                             f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")}Вам предложат английскую идиому, '
                             f'а так же 4 варианта их перевода.{emoji.emojize("🇬🇧🇬🇧🇬🇧")}\n'
                             f'{emoji.emojize("⛔")}/cancel - выйти из теста{emoji.emojize("⛔")}\n'
-                            f'{emoji.emojize("👇👇👇")}В тесте 6 вопросов{emoji.emojize("👇👇👇")}')
+                            f'{emoji.emojize("👇👇👇")}В тесте 6 вопросов{emoji.emojize("👇👇👇")}',
+                            reply_markup=keyboard)
         await state.set_state(MyStates.all()[1])
         await idiom_test(message)
 
@@ -254,11 +263,16 @@ async def echo(message: types.Message):
     elif message.text == '/translate' or message.text == 'Переводчик':
 
         state = dp.current_state(user=chat_id)
-        await message.answer(f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")}Введите слово или фразу для перевода{emoji.emojize("🇬🇧🇬🇧🇬🇧")}')
+        keyboard = kb.get_kbrd_translate()
+        await message.answer(f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")}Введите слово или фразу для перевода{emoji.emojize("🇬🇧🇬🇧🇬🇧")}', reply_markup=keyboard)
         await state.set_state(MyStates.all()[2])
 
     elif message.text == 'Просмотреть мои данные':
         user = db.get_user(message.from_user.id)
+
+        stat_word = user[0][9].split(':')
+        stat_idiom = user[0][10].split(':')
+
         user_text = f'{emoji.emojize("🙂🙃🙂")}Ваш профиль:{emoji.emojize("🙂🙃🙂")}\n' \
                     f'{emoji.emojize("🔑")}telegram_id:  {user[0][0]}\n' \
                     f'{emoji.emojize("👤")}first_name:   {user[0][1]}\n' \
@@ -266,9 +280,13 @@ async def echo(message: types.Message):
                     f'{emoji.emojize("🤖")}username: {user[0][3]}\n' \
                     f'{emoji.emojize("📱")}phone:    {user[0][4]}\n' \
                     f'{emoji.emojize("📧")}email:    {user[0][5]}\n' \
-                    f'{emoji.emojize("🏳️")}language_code:   {user[0][8]}'
+                    f'{emoji.emojize("🏳️")}language_code:   {user[0][8]}\n' \
+                    f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")} Проведено тестов на знание слов {stat_word[0]} с общим результатом {stat_word[1]} верных ответов из {stat_word[2]}\n' \
+                    f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")} Проведено тестов на знание слов {stat_idiom[0]} с общим результатом {stat_idiom[1]} верных ответов из {stat_idiom[2]}\n' \
+                    f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")} Аудиоуроков пройдено - {user[0][11]}'
         await message.answer(user_text)
 
+# тест на слова
 @dp.callback_query_handler(state=MyStates.STATES_0)
 async def call_word(callback_q: types.CallbackQuery, ):
 
@@ -295,7 +313,7 @@ async def call_word(callback_q: types.CallbackQuery, ):
 
     question = num - len(callback_word_test[callback_q.from_user.id])
     await bot.send_message(chat_id=callback_q.from_user.id, text=f'{emoji.emojize("💡")} Осталось {question} вопросов из {num} {emoji.emojize("💡")}')
-    await bot.send_message(chat_id=callback_q.from_user.id, text=f'{emoji.emojize("⛔")}/cancel - выйти из теста{emoji.emojize("⛔")}')
+    # await bot.send_message(chat_id=callback_q.from_user.id, text=f'{emoji.emojize("⛔")}/cancel - выйти из теста{emoji.emojize("⛔")}')
 
     if len(callback_word_test[callback_q.from_user.id]) == num:
 
@@ -303,13 +321,30 @@ async def call_word(callback_q: types.CallbackQuery, ):
         correct_answer_text = f'Вы сделали в тесте {emoji.emojize("👍")} {len(correct_answer)} {emoji.emojize("👍")}' \
                               f'правильных ответов из {len(callback_word_test[callback_q.from_user.id])}'
 
-        await bot.send_message(chat_id=callback_q.from_user.id, text=correct_answer_text)
+        keyboard = kb.keyboard_menu
+        await bot.send_message(chat_id=callback_q.from_user.id, text=correct_answer_text, reply_markup=keyboard)
         callback_word_test[callback_q.from_user.id].clear()
+
+        # значениея в словаре (количество раз пройден тест):(правильных ответов):(всего ответов)
+        statistic_from_base = db.get_user(telegram_id=callback_q.from_user.id)
+
+        if statistic_from_base[0][9] == None:
+            word_dict = {
+                'statistics_word_test': f'1:{len(correct_answer)}:{len(callback_word_test[callback_q.from_user.id])}'
+            }
+            db.update_user(telegram_id=callback_q.from_user.id, data=word_dict)
+        else:
+            stat_list = statistic_from_base[0][9].split(':')
+            word_dict = {
+                'statistics_word_test': f'{int(stat_list[0])+1}:{int(stat_list[1])+len(correct_answer)}:{(int(stat_list[0])+1) * num}'
+            }
+            db.update_user(telegram_id=callback_q.from_user.id, data=word_dict)
+
         await state.set_state('*')
     else:
         await word_test(callback_q.message)
 
-
+# тест на идиомы
 @dp.callback_query_handler(state=MyStates.STATES_1)
 async def call_idiom(callback_q: types.CallbackQuery, ):
 
@@ -336,7 +371,7 @@ async def call_idiom(callback_q: types.CallbackQuery, ):
 
     question = num - len(callback_idiom_test[callback_q.from_user.id])
     await bot.send_message(chat_id=callback_q.from_user.id, text=f'{emoji.emojize("💡")} Осталось {question} вопросов из {num} {emoji.emojize("💡")}')
-    await bot.send_message(chat_id=callback_q.from_user.id, text=f'{emoji.emojize("⛔")}/cancel - выйти из теста{emoji.emojize("⛔")}')
+    # await bot.send_message(chat_id=callback_q.from_user.id, text=f'{emoji.emojize("⛔")}/cancel - выйти из теста{emoji.emojize("⛔")}')
     # await bot.send_message(chat_id=callback_q.from_user.id, text='/cancel - для остановки теста')
 
     if len(callback_idiom_test[callback_q.from_user.id]) == num:
@@ -345,8 +380,25 @@ async def call_idiom(callback_q: types.CallbackQuery, ):
         correct_answer_text = f'Вы сделали в тесте {emoji.emojize("👍")}{len(correct_answer)}{emoji.emojize("👍")}' \
                               f'правильных ответов из {len(callback_idiom_test[callback_q.from_user.id])}'
 
-        await bot.send_message(chat_id=callback_q.from_user.id, text=correct_answer_text)
+        keyboard = kb.keyboard_menu
+        await bot.send_message(chat_id=callback_q.from_user.id, text=correct_answer_text, reply_markup=keyboard)
         callback_idiom_test[callback_q.from_user.id].clear()
+
+        # значениея в словаре (количество раз пройден тест):(правильных ответов):(всего ответов)
+        statistic_from_base = db.get_user(telegram_id=callback_q.from_user.id)
+
+        if statistic_from_base[0][10] == None:
+            idiom_dict = {
+                'statistics_idiom_test': f'1:{len(correct_answer)}:{len(callback_idiom_test[callback_q.from_user.id])}'
+            }
+            db.update_user(telegram_id=callback_q.from_user.id, data=idiom_dict)
+        else:
+            stat_list = statistic_from_base[0][10].split(':')
+            idiom_dict = {
+                'statistics_idiom_test': f'{int(stat_list[0])+1}:{int(stat_list[1])+len(correct_answer)}:{(int(stat_list[0])+1) * num}'
+            }
+            db.update_user(telegram_id=callback_q.from_user.id, data=idiom_dict)
+
         await state.set_state('*')
     else:
         await idiom_test(callback_q.message)
