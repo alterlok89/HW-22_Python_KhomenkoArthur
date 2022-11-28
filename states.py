@@ -9,6 +9,8 @@ class MyStates(Helper):
     STATES_2 = ListItem()
     STATES_3 = ListItem()
     STATES_4 = ListItem()
+    STATES_5 = ListItem()
+    STATES_6 = ListItem()
 
 
 

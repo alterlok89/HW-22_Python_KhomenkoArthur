@@ -159,15 +159,94 @@ db = database.DataBase()
 #     if i[0]['callback_data'] == 'Верно!':
 #         print(i[0]['text'])
 
-callback_word_test = {}
+# callback_word_test = {}
+#
+#
+# callback_word_test.update({'message.from_user.id': []})
+# print(callback_word_test)
+# a = 'Верно!'
+# callback_word_test['message.from_user.id'].append(a)
+# callback_word_test['message.from_user.id'].append(a)
+# callback_word_test['message.from_user.id'].append(a)
+# callback_word_test['message.from_user.id'].append(a)
+#
+# print(callback_word_test)
 
 
-callback_word_test.update({'message.from_user.id': []})
-print(callback_word_test)
-a = 'Верно!'
-callback_word_test['message.from_user.id'].append(a)
-callback_word_test['message.from_user.id'].append(a)
-callback_word_test['message.from_user.id'].append(a)
-callback_word_test['message.from_user.id'].append(a)
+db = database.DataBase()
+# dict = db.get_all_item(table='Lessons')
+# print(dict)
+# print(dict[0][0])
+# for i in range(0, len(dict), 5):
+#     print(i)
 
-print(callback_word_test)
+id = 581069221
+word_dict = {
+            'statistics_word_test': f'1:10:10'
+        }
+# dic2={
+#         'email': 'afas@asa',
+#     }
+#
+# print(list(dic.keys())[0])
+# print(list(dic.values())[0])
+
+
+# db.update_user(telegram_id=id, data=word_dict)
+# db.update_user(telegram_id=id, data=dic2)
+# a = db.get_user(telegram_id=id)
+# # print(a)
+# # print(a[0])
+# # print(a[0][0])
+# print('statistics_word_test - ', a[0][9])
+# # print('statistics_idiom_test - ', a[0][10])
+# # print('lesson - ', a[0][11])
+# list_a = a[0][9].split(':')
+# print(list_a)
+# word_dict = {
+#         'statistics_word_test': f'{int(list_a[0])+1}:{int(list_a[1])+5}:{int(list_a[2])+10}'
+#         }
+#
+# print(word_dict)
+# stat_idiom = ['0','0','0']
+# print(stat_idiom[0])
+# print(stat_idiom[1])
+# print(stat_idiom[2])
+
+# a = 'Урок 1 - 5'
+# print(a.find(' - '))
+# print(a.find('Урок'))
+#
+# l = a.replace('Урок ', '').split(' - ')
+# print(l)
+# for i in range(0, (65 // 5), 5):
+#     if (i + 25) % 5 == 0:
+#         print(
+#             i+5,
+#             i+10,
+#             i+15,
+#             i+20,
+#             i+25,
+#         )
+#     elif (i + 25) % 5 == 1:
+#         print(
+#             i+5,
+#         )
+#     elif (i + 25) % 5 == 2:
+#         print(
+#             i+5,
+#             i+10,
+#         )
+#     elif (i + 25) % 5 == 3:
+#         print(
+#             i+5,
+#             i+10,
+#             i+15,
+#         )
+#     elif (i +25) % 5 == 4:
+#         print(
+#             i+5,
+#             i+10,
+#             i+15,
+#             i+20,
+#         )

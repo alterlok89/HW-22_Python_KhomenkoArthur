@@ -35,11 +35,12 @@ async def ph(message: types.Message):
     # print(message)
     # print(message.contact.phone_number)
     # print(message.from_id)
-    state = dp.current_state(user=chat_id)
+    state = dp.current_state(user=message.from_user.id)
 
     phone={
             'phone': message.contact.phone_number,
         }
+    # print(phone)
     db.update_user(telegram_id=message.from_id, data=phone)
     # await state.set_state(MyStates.all()[4])
 
@@ -129,6 +130,7 @@ async def user_data(message: types.Message):
         await state.set_state(MyStates.all()[4])
 
 
+# обновление данных email
 @dp.message_handler(state=MyStates.STATES_4)
 async def user_data(message: types.Message):
 
@@ -147,6 +149,73 @@ async def user_data(message: types.Message):
         keyboard = kb.keyboard_menu
         await message.answer(message.text, reply_markup=keyboard)
         await state.set_state('*')
+
+
+# аудиоуроки
+@dp.message_handler(state=MyStates.STATES_5)
+async def user_data(message: types.Message):
+
+    state = dp.current_state(user=message.from_user.id)
+
+    if message.text == '/cancel' or message.text == 'Главное меню':
+
+        state = dp.current_state(user=message.from_user.id)
+        keyboard = kb.keyboard_menu
+        await message.answer(f'{emoji.emojize("⚠️⚠️")} Аудиоуроки завершены {emoji.emojize("⚠️⚠️")}', reply_markup=keyboard,)
+        await state.set_state('*')
+
+    # lesson = message.text
+    if message.text.find('Урок') != -1 and message.text.find(' - ') != -1:
+
+        lesson = message.text.replace('Урок ', '').split(' - ')
+        # print(lesson)
+        keyboard = kb.get_audio_kbrd_num_lesson(num_start=int(lesson[0]),num_end=int(lesson[1]))
+        await state.set_state(MyStates.all()[6])
+        await message.answer( f'{emoji.emojize("⤵️")}Выберите аудио урок ниже{emoji.emojize("⤵️")}', reply_markup=keyboard,)
+
+
+# аудиоуроки
+@dp.message_handler(state=MyStates.STATES_6)
+async def user_data(message: types.Message):
+
+    # print(message.text.find('Назад'))
+
+    if message.text == '/cancel' or message.text == 'Главное меню':
+
+        state = dp.current_state(user=message.from_user.id)
+        keyboard = kb.keyboard_menu
+        await message.answer(f'{emoji.emojize("⚠️⚠️")} Аудиоуроки завершены {emoji.emojize("⚠️⚠️")}', reply_markup=keyboard,)
+        await state.set_state('*')
+
+    if message.text.find('Назад') != -1:
+
+        state = dp.current_state(user=message.from_user.id)
+        keyboard = kb.get_audio_kbrd()
+        await state.set_state(MyStates.all()[5])
+        await message.answer(
+                        f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")}Выберите урок, который хотите прослушать{emoji.emojize("🇬🇧🇬🇧🇬🇧")}',
+                        reply_markup=keyboard
+                            )
+
+    if message.text.find('Урок') != -1:
+
+        dict = db.get_all_item(table='Lessons')
+        mes = message.text
+        i = int(mes.replace('Урок ', ''))
+        i -= 1
+        purpose = f'{emoji.emojize("✅")}{dict[i][1]}\n' \
+                  f'{emoji.emojize("⤵️")}Содержание урока{emoji.emojize("⤵️")}'
+        # print(purpose)
+        content = f'{emoji.emojize("✅")}{dict[i][2]}\n' \
+                  f'{emoji.emojize("⤵️")}Прослушайте аудио урок ниже{emoji.emojize("⤵️")}'
+        # print(content)
+        audio_url = dict[i][3]
+        # print(audio_url)
+        await message.answer(purpose)
+        await message.answer(content)
+        await message.answer_audio(audio_url)
+
+
 
 @dp.message_handler(state='*')
 async def echo(message: types.Message):
@@ -235,30 +304,13 @@ async def echo(message: types.Message):
 
     elif message.text == 'Аудио урок' or message.text == '/lessons':
 
+        state = dp.current_state(user=chat_id)
         keyboard = kb.get_audio_kbrd()
+        await state.set_state(MyStates.all()[5])
         await message.answer(
                         f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")}Выберите урок, который хотите прослушать{emoji.emojize("🇬🇧🇬🇧🇬🇧")}',
                         reply_markup=keyboard
                             )
-
-    lesson = message.text
-    if lesson.find('Урок') != -1:
-
-        dict = db.get_all_item(table='Lessons')
-        mes = message.text
-        i = int(mes.replace('Урок ', ''))
-        i -= 1
-        purpose = f'{emoji.emojize("✅")}{dict[i][1]}\n' \
-                  f'{emoji.emojize("⤵️")}Содержание урока{emoji.emojize("⤵️")}'
-        # print(purpose)
-        content = f'{emoji.emojize("✅")}{dict[i][2]}\n' \
-                  f'{emoji.emojize("⤵️")}Прослушайте аудио урок ниже{emoji.emojize("⤵️")}'
-        # print(content)
-        audio_url = dict[i][3]
-        # print(audio_url)
-        await message.answer(purpose)
-        await message.answer(content)
-        await message.answer_audio(audio_url)
 
     elif message.text == '/translate' or message.text == 'Переводчик':
 
@@ -282,8 +334,8 @@ async def echo(message: types.Message):
                     f'{emoji.emojize("📧")}email:    {user[0][5]}\n' \
                     f'{emoji.emojize("🏳️")}language_code:   {user[0][8]}\n' \
                     f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")} Проведено тестов на знание слов {stat_word[0]} с общим результатом {stat_word[1]} верных ответов из {stat_word[2]}\n' \
-                    f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")} Проведено тестов на знание слов {stat_idiom[0]} с общим результатом {stat_idiom[1]} верных ответов из {stat_idiom[2]}\n' \
-                    f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")} Аудиоуроков пройдено - {user[0][11]}'
+                    f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")} Проведено тестов на знание идиом {stat_idiom[0]} с общим результатом {stat_idiom[1]} верных ответов из {stat_idiom[2]}\n' \
+                    # f'{emoji.emojize("🇬🇧🇬🇧🇬🇧")} Аудиоуроков пройдено - {user[0][11]}'
         await message.answer(user_text)
 
 # тест на слова

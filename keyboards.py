@@ -1,6 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-import database, random
+import database
+
 
 menu = [
         'Аудио урок',
@@ -32,23 +33,28 @@ def get_audio_kbrd():
     dict = db.get_all_item(table='Lessons')
     # print(dict)
     # print(dict[0][1])
-    menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=5,)
+    menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=5, )
     for i in range(0, len(dict), 5):
         # print(i)
-        menu.row(
-            KeyboardButton(f'Урок {i+1}',),
-            KeyboardButton(f'Урок {i+2}',),
-            KeyboardButton(f'Урок {i+3}',),
-            KeyboardButton(f'Урок {i+4}',),
-            KeyboardButton(f'Урок {i+5}',),
-        )
-        menu.add(KeyboardButton('Главное меню'))
-    # for i in dict:
-    #     menu.row(
-    #         KeyboardButton(f'Урок {i[0]}',)
-    #     )
-    #     menu.add(KeyboardButton('Главное меню'))
+        # if i % 5 == 0:
+        menu.insert(
+                KeyboardButton(f'Урок {i+1} - {i+5}',),
+            )
+    menu.add(KeyboardButton('Главное меню'))
+
     return menu
+
+def get_audio_kbrd_num_lesson(num_start: int, num_end: int):
+    menu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=5, )
+    for i in range(num_start, num_end + 1):
+        menu.insert(
+                KeyboardButton(f'Урок {i}',),
+            )
+    menu.add(KeyboardButton('⬅️ Назад '))
+    menu.add(KeyboardButton('Главное меню'))
+
+    return menu
+
 
 # bot.send_audio(chat_id, audio.get('url')
 
